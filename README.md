@@ -38,8 +38,7 @@ Or, inside a session, `/plugin marketplace add ~/Projects/pair`, then install `p
 
 ### Not used, and why
 
-- `git-guardrails-claude-code`: not in the installed mattpocock-skills version, and the permission mode does the job more visibly (see below).
-- `caveman`: very short output can confuse the interviewer.
+- `git-guardrails-claude-code`: its files ship with mattpocock-skills (`skills/misc/`), but the plugin doesn't offer it as a skill, and the permission mode does the job more visibly (see below).
 - PRD, issue and triage skills: don't fit in 45 minutes.
 - `zoom-out`: removed upstream; `pair:onboard` covers it.
 - xray: not ready, so don't rely on it.
