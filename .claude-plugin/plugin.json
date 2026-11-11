@@ -1,0 +1,8 @@
+{
+  "name": "pair",
+  "version": "0.1.0",
+  "description": "Skills for an AI-assisted pair programming interview: onboard, orient, review-diff, react-component.",
+  "author": {
+    "name": "pearpages"
+  }
+}

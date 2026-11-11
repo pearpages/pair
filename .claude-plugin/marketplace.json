@@ -1,0 +1,13 @@
+{
+  "name": "pair",
+  "owner": {
+    "name": "pearpages"
+  },
+  "plugins": [
+    {
+      "name": "pair",
+      "source": "./",
+      "description": "Skills for an AI-assisted pair programming interview: onboard, orient, review-diff, react-component."
+    }
+  ]
+}
