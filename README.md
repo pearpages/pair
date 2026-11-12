@@ -10,6 +10,7 @@ The idea: reuse existing skills where they already fit, and build only the gaps.
 | `pair:orient` | Answers a question about one part of the code in chat, with `file:line` links. Writes nothing. |
 | `pair:plan` | Asks at most three questions for the interviewer, then proposes a layered design (pure logic, data access, UI), the test list with edge cases, and what's out of scope. Writes nothing. |
 | `pair:write-tests` | Turns the agreed test list into failing tests in the repo's own pattern, testing public interfaces only, with Testing Library queries in priority order. No implementation. |
+| `pair:implement` | Makes the failing tests pass with the smallest change in the repo's conventions, layer by layer. Never edits a test; stops and asks if one looks wrong. Runs tests, typecheck and lint once. |
 | `pair:smoke-test` | Starts the dev server and checks each spec by hand in Chrome, plus a keyboard-only pass and the console. Reports pass or fail; fixes nothing. |
 | `pair:review-diff` | A fresh sub-agent reviews `git diff` and returns at most five issues, ranked by severity. |
 | `pair:react-component` | Builds a React component test-first, in the repo's own conventions, with accessibility built in. |
@@ -94,7 +95,7 @@ When you're done, delete both files and their two lines in `.git/info/exclude`.
 2. **Each task:**
    1. Plan: `pair:plan` with the spec. Read its questions to the interviewer, pass the answers back, and agree on the design and the test list.
    2. Write tests: `pair:write-tests`. They should all fail, for the right reason. (For a single new component, `pair:react-component` does steps 2 and 3 in one go; for a bug, `diagnosing-bugs`.)
-   3. Implement: "Make the tests pass following the conventions. Don't edit the tests; if one looks wrong, stop and say why. Then run tests, typecheck and lint once."
+   3. Implement: `pair:implement`. The tests are fixed: if one looks wrong, it stops and says why. Ends with tests, typecheck and lint run once.
    4. Smoke test: `pair:smoke-test`.
    5. Review: `pair:review-diff`, then decide aloud which findings to act on.
    6. Commit: `craft:commit-message`.
@@ -110,6 +111,7 @@ Throughout: narrate what you're doing and why, and ask the interviewer whenever 
 | "How does X work?" or "where does Y happen?" about one part of the code | `pair:orient` | Chat answer only; good to read aloud. |
 | You're given a task or spec | `pair:plan` | Three questions at most, read aloud; then design and test list. Writes nothing. |
 | Plan agreed, time to write tests | `pair:write-tests` | All tests first, all failing for the right reason. |
+| Tests written and failing, time to build | `pair:implement` | Smallest change that passes; never edits a test. |
 | Add a small feature or change one behavior, no plan needed | `mattpocock-skills:tdd` | Red → green → refactor, one test at a time. |
 | Build a new React component | `pair:react-component` | Already test-first, so no need to also call `tdd`. |
 | Something is broken, throwing, failing or slow | `mattpocock-skills:diagnosing-bugs` | Reproduce first, then a failing test, then the fix. |

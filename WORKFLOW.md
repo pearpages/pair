@@ -13,7 +13,7 @@ The table below is the short version. To see exactly what each skill tells the A
 | 1 | Explore | `/pair:onboard` | Reads the config and a few typical files, then summarizes the conventions: stack, commands, tests, styling, folders, commit style. Finds the **entry point**, builds a **glossary** of the project's own domain words (its ubiquitous language) so code and tests use the same names, and flags **anything odd**. Runs the tests once. Every claim points to a file as evidence, and guesses are labeled as guesses. | Touch any of your files. Its notes go in a local `PAIR_PROGRAMMING.md` that git ignores. |
 | 2 | Plan | `/pair:plan <your spec>` | Asks **at most 3 questions**, which I read to you. Then it proposes a **modular, layered** design, named with the glossary's words: pure logic, data access and UI kept apart. It also lists **the tests we'll write**, including the edge cases that could break the app, and what's out of scope. | Write any code. It waits until we agree. |
 | 3 | Write tests | `/pair:write-tests` | Turns the agreed list into tests, following this repo's existing test patterns. Tests only the **public interface**, so they survive a rewrite. Covers **accessibility**. Runs them and shows each one **fails for the right reason**. | Write the implementation. |
-| 4 | Implement | *"Make the tests pass following the conventions. Don't edit the tests."* | Writes the smallest code that passes, then runs tests, typecheck and lint. | Change a test to make it pass. If a test looks wrong, it stops and says why. |
+| 4 | Implement | `/pair:implement` | Writes the smallest code that passes, one layer at a time (logic, then data, then UI), in this repo's conventions and the glossary's words. Then runs tests, typecheck and lint once each. | Change a test to make it pass. If a test looks wrong, it stops and says why. |
 | 5 | Smoke test | `/pair:smoke-test` | Opens the app in a real browser (Chrome) and checks each spec by hand. Also does a **keyboard-only** pass and reads the console and network for errors. Reports pass/fail with evidence. | Fix anything. I decide what to act on. |
 | 6 | Review | `/pair:review-diff` | A **separate agent**, which didn't write the code, reviews the change. It reports **at most 5 issues**, most severe first, in plain English. | Fix anything. I decide what to act on. |
 | 7 | Commit | `/craft:commit-message` | Drafts a message in this repo's commit style and shows it before committing. | Push. |
@@ -43,7 +43,7 @@ If a test can't find a control by its role and name, that's treated as an access
 
 ## The skills in full
 
-Below is the exact prompt each skill gives the AI, word for word from this plugin. Open one to see it. Phase 4 (Implement) has no skill: the prompt in the table above is the whole instruction. `craft:commit-message` comes from another plugin, so it isn't included here.
+Below is the exact prompt each skill gives the AI, word for word from this plugin. Open one to see it. `craft:commit-message` comes from another plugin, so it isn't included here.
 
 ### `pair:onboard` — 1 · Explore
 
@@ -292,6 +292,46 @@ Goal: the plan, written down as tests that fail now and will pass once the featu
 ## Report
 
 In chat, at most 10 lines: the files written, the model test you followed, one line per test grouped by module (⚠ on edge cases), and the run result showing they fail for the right reason. Then stop. The person says when to implement; at that point the tests are fixed and the implementation must not change them.
+````
+
+</details>
+
+### `pair:implement` — 4 · Implement
+
+*When it triggers:* Make the agreed failing tests pass with the smallest change that follows the repo's conventions, in a pair programming session. Use after pair:write-tests, when asked to implement, make the tests pass, "go green", build it now, or on /pair:implement. Never edits a test to make it pass; if a test looks wrong it stops and says why. Builds in small steps along the plan's layers, then runs tests, typecheck and lint once each and reports. Does not commit.
+
+<details>
+<summary>Show the full prompt</summary>
+
+````markdown
+# Implement
+
+Goal: turn the failing tests into passing ones with the least code that does it, written the way this project's own developers would write it. Someone is watching, so say in plain English what you're about to change and why before each edit.
+
+## Rules
+
+- **The tests are fixed.** Don't edit, delete, skip (`.skip`, `.only`, `xit`) or loosen any test, its fixtures or its snapshots. If a test looks wrong (it contradicts the spec, another test or the glossary, or can't pass without breaking the design), stop, quote the line as a `file:line` link, say why, and ask. The person decides; only then does a test change.
+- **Smallest change that passes.** No features, options, abstractions or refactors the tests don't ask for. If you see something worth doing beyond that, name it in the report as a next step instead of doing it.
+- **The plan's design.** Follow the layers agreed in `pair:plan`: pure logic apart from data access and UI. Put each piece in the module the plan named. If the code wants a different shape, stop and say so instead of quietly changing the design.
+- **The repo's conventions.** Mirror the nearest existing file for naming, file layout, imports, error handling and styling. If `PAIR_PROGRAMMING.md` exists, its "Conventions found" section wins. Name things with the words in its "Glossary". Styles go in the project's own styling approach, never inline styles or style objects unless that is what the repo already does.
+- **No new dependencies.** If something seems to need one, say so and ask.
+- **Don't commit.** Stop when the checks are run; committing comes later.
+
+## Steps
+
+1. **Read the failures.** Run only the new tests once, in single-run mode, never watch (`npx vitest --run <file>`, `CI=true npx jest <file>`, or the script plus `-- --run`). Say in one line each what's missing.
+
+2. **Inside out.** Implement the pure logic first and run its tests; then the data access; then the UI wiring. One layer at a time, a small edit at a time, each preceded by a sentence on what it does. After each layer, run that layer's tests again.
+
+3. **Replace the stubs.** Any `not implemented` stub or empty component left by `pair:write-tests` gets its real body. None remains at the end.
+
+4. **When a test won't pass,** read the failure before changing anything. If the cause is in your code, fix the code. If it's in the test, apply the first rule: stop and ask.
+
+5. **Run the checks once each**, using the commands in `PAIR_PROGRAMMING.md` (or `package.json`): the full test suite in single-run mode, the typecheck, and the lint. Don't auto-fix lint across files you didn't touch. If a check fails on code you didn't change, say it was already failing and leave it.
+
+## Report
+
+In chat, at most 10 lines: the files changed, one line per layer on what was added, the result of tests, typecheck and lint (pass or fail, with the count), any test you stopped on, and anything you noticed but left out of scope. Then stop. Next comes `pair:smoke-test`.
 ````
 
 </details>
