@@ -11,7 +11,7 @@ Goal: turn the failing tests into passing ones with the least code that does it,
 
 - **The tests are fixed.** Don't edit, delete, skip (`.skip`, `.only`, `xit`) or loosen any test, its fixtures or its snapshots. If a test looks wrong (it contradicts the spec, another test or the glossary, or can't pass without breaking the design), stop, quote the line as a `file:line` link, say why, and ask. The person decides; only then does a test change.
 - **Smallest change that passes.** No features, options, abstractions or refactors the tests don't ask for. If you see something worth doing beyond that, name it in the report as a next step instead of doing it.
-- **The plan's design.** Follow the layers agreed in `pair:plan`: pure logic apart from data access and UI. Put each piece in the module the plan named. If the code wants a different shape, stop and say so instead of quietly changing the design.
+- **The plan's design.** Follow the layers in the "Current plan" section of `PAIR_PROGRAMMING.md` (or the plan agreed in chat if it isn't saved): pure logic apart from data access and UI. Put each piece in the module the plan named. If the code wants a different shape, stop and say so instead of quietly changing the design.
 - **The repo's conventions.** Mirror the nearest existing file for naming, file layout, imports, error handling and styling. If `PAIR_PROGRAMMING.md` exists, its "Conventions found" section wins. Name things with the words in its "Glossary". Styles go in the project's own styling approach, never inline styles or style objects unless that is what the repo already does.
 - **No new dependencies.** If something seems to need one, say so and ask.
 - **Don't commit.** Stop when the checks are run; committing comes later.

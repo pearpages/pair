@@ -15,7 +15,7 @@ Goal: in about 3 minutes, show that the feature works for a real user in a real 
 
 ## Steps
 
-1. **Get the specs.** Use the agreed test list from `pair:plan`, or the task as the interviewer gave it. Write the checks as a numbered list in chat, one user-visible action and expected result each. Add the ⚠ edge cases you can reach from the UI.
+1. **Get the specs.** Use the test list in the "Current plan" section of `PAIR_PROGRAMMING.md`, or the one agreed in chat, or the task as the interviewer gave it. Write the checks as a numbered list in chat, one user-visible action and expected result each. Add the ⚠ edge cases you can reach from the UI.
 
 2. **Start the app.** Take the dev command from `PAIR_PROGRAMMING.md` (or `package.json` `dev`/`start`). If a server is already running, reuse it. Otherwise start it in the background, never in the foreground, and read its output for the local URL and any build errors. A build error is a failed smoke test: report it and stop.
 

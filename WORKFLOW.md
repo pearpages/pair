@@ -11,7 +11,7 @@ The table below is the short version. To see exactly what each skill tells the A
 | # | Phase | What I type | What it does | What it won't do |
 |---|---|---|---|---|
 | 1 | Explore | `/pair:onboard` | Reads the config and a few typical files, then summarizes the conventions: stack, commands, tests, styling, folders, commit style. Finds the **entry point**, builds a **glossary** of the project's own domain words (its ubiquitous language) so code and tests use the same names, and flags **anything odd**. Runs the tests once. Every claim points to a file as evidence, and guesses are labeled as guesses. | Touch any of your files. Its notes go in a local `PAIR_PROGRAMMING.md` that git ignores. |
-| 2 | Plan | `/pair:plan <your spec>` | Asks **at most 3 questions**, which I read to you. Then it proposes a **modular, layered** design, named with the glossary's words: pure logic, data access and UI kept apart. It also lists **the tests we'll write**, including the edge cases that could break the app, and what's out of scope. | Write any code. It waits until we agree. |
+| 2 | Plan | `/pair:plan <your spec>` | Asks **at most 3 questions**, which I read to you. Then it proposes a **modular, layered** design, named with the glossary's words: pure logic, data access and UI kept apart. It also lists **the tests we'll write**, including the edge cases that could break the app, and what's out of scope. Once we agree, it **saves the plan** in the local `PAIR_PROGRAMMING.md`, so the next steps work from the agreed version, not from memory. | Write any code. It waits until we agree. |
 | 3 | Write tests | `/pair:write-tests` | Turns the agreed list into tests, following this repo's existing test patterns. Tests only the **public interface**, so they survive a rewrite. Covers **accessibility**. Runs them and shows each one **fails for the right reason**. | Write the implementation. |
 | 4 | Implement | `/pair:implement` | Writes the smallest code that passes, one layer at a time (logic, then data, then UI), in this repo's conventions and the glossary's words. Then runs tests, typecheck and lint once each. | Change a test to make it pass. If a test looks wrong, it stops and says why. |
 | 5 | Smoke test | `/pair:smoke-test` | Opens the app in a real browser (Chrome) and checks each spec by hand. Also does a **keyboard-only** pass and reads the console and network for errors. Reports pass/fail with evidence. | Fix anything. I decide what to act on. |
@@ -157,6 +157,9 @@ Do not present any of these as "how this project does it".
 
 <one entry per assumption or gap; be verbose here>
 
+## Current plan
+None yet. `pair:plan` writes the agreed plan for the current task here.
+
 ## Working rules for this session
 - Follow "Conventions found" over any personal or default preference.
 - Name things with the words in "Glossary". A new concept gets a name agreed with the interviewer, then added there.
@@ -171,7 +174,7 @@ Do not present any of these as "how this project does it".
 
 ### `pair:plan` — 2 · Plan
 
-*When it triggers:* Turn the interviewer's spec into an agreed plan before any code is written, in a pair programming session. Use when given a task or spec to build, asked to plan, design, break down or "think about how we'd do this", or on /pair:plan. Asks at most three clarifying questions for the person to read to the interviewer, then proposes a modular, layered design (pure logic apart from UI and data access), the list of tests to write with edge cases that could break the app, and what is out of scope. Writes no files and no code; waits for agreement.
+*When it triggers:* Turn the interviewer's spec into an agreed plan before any code is written, in a pair programming session. Use when given a task or spec to build, asked to plan, design, break down or "think about how we'd do this", or on /pair:plan. Asks at most three clarifying questions for the person to read to the interviewer, then proposes a modular, layered design (pure logic apart from UI and data access), the list of tests to write with edge cases that could break the app, and what is out of scope. Writes no code; waits for agreement, then saves the plan to the Current plan section of the local PAIR_PROGRAMMING.md so later steps read it from there.
 
 <details>
 <summary>Show the full prompt</summary>
@@ -184,7 +187,7 @@ Goal: in about 5 minutes, agree with the person (and through them, the interview
 ## Rules
 
 - **The interviewer holds the requirements.** Don't invent them. When the spec is silent, ask; don't decide.
-- **Write nothing.** No files, no code, no tests. The output is a plan in chat.
+- **No code.** No source files, no tests, no tracked files. The plan is proposed in chat. The only file you touch is the local, git-ignored `PAIR_PROGRAMMING.md`, and only once the plan is agreed (see "Save the plan").
 - **Follow the project.** If `PAIR_PROGRAMMING.md` exists, read it first. File names, folders, test style and naming in the plan come from its "Conventions found" section. Anything that isn't there is flagged as a choice.
 - **Speak the domain language.** Name modules, functions, props and tests with the words in the "Glossary" section of `PAIR_PROGRAMMING.md`, not synonyms. If the spec brings a new concept, propose a name for it and list it under **New terms** so the interviewer can agree it; if the spec's words clash with the code's, ask which one wins.
 - **Fit the time.** This is a 45-minute interview. Plan the smallest thing that meets the spec; list the rest as out of scope.
@@ -236,9 +239,17 @@ At most one screen, in chat.
 **Assumptions:** <… or "none">
 ```
 
-Once agreed, add any new terms to the "Glossary" table in `PAIR_PROGRAMMING.md`.
+End by asking for agreement. If the person or the interviewer changes something, update the plan in chat and ask again.
 
-End by asking for agreement. Do not start writing tests until the person says go; then `pair:write-tests` takes the test list as it is.
+## Save the plan
+
+Once the plan is agreed, and before anything else:
+
+1. **Write it to `PAIR_PROGRAMMING.md`**, in a section called `## Current plan`, just above "Working rules for this session". Use the output format above, as agreed, with the line `Agreed: <the task in a few words>` at the top. If the section already exists from an earlier task, replace it: one plan at a time, and the earlier task's work is in its commits. This is the copy the later steps read, so a long conversation can't blur it.
+2. **Add any new terms** to the "Glossary" table in the same file.
+3. If `PAIR_PROGRAMMING.md` doesn't exist, don't create it here (it would show up in `git status`). Say so, keep the plan in chat, and suggest running `pair:onboard` first.
+
+Say in one line that the plan is saved. Do not start writing tests until the person says go; then `pair:write-tests` takes the test list from that section as it is.
 ````
 
 </details>
@@ -265,7 +276,7 @@ Goal: the plan, written down as tests that fail now and will pass once the featu
 
 ## Steps
 
-1. **Get the test list.** Use the one agreed in `pair:plan`. If there isn't one, list the behaviors in chat in short bullets and ask the person to confirm before writing.
+1. **Get the test list.** Read the "Current plan" section of `PAIR_PROGRAMMING.md`, saved by `pair:plan`; if it isn't there, use the plan agreed in chat. If there isn't one, list the behaviors in chat in short bullets and ask the person to confirm before writing.
 
 2. **Pick a model test.** Find the existing test most like the one you're writing and say which one, as a `file` link. Copy its setup, not its assertions.
 
@@ -312,7 +323,7 @@ Goal: turn the failing tests into passing ones with the least code that does it,
 
 - **The tests are fixed.** Don't edit, delete, skip (`.skip`, `.only`, `xit`) or loosen any test, its fixtures or its snapshots. If a test looks wrong (it contradicts the spec, another test or the glossary, or can't pass without breaking the design), stop, quote the line as a `file:line` link, say why, and ask. The person decides; only then does a test change.
 - **Smallest change that passes.** No features, options, abstractions or refactors the tests don't ask for. If you see something worth doing beyond that, name it in the report as a next step instead of doing it.
-- **The plan's design.** Follow the layers agreed in `pair:plan`: pure logic apart from data access and UI. Put each piece in the module the plan named. If the code wants a different shape, stop and say so instead of quietly changing the design.
+- **The plan's design.** Follow the layers in the "Current plan" section of `PAIR_PROGRAMMING.md` (or the plan agreed in chat if it isn't saved): pure logic apart from data access and UI. Put each piece in the module the plan named. If the code wants a different shape, stop and say so instead of quietly changing the design.
 - **The repo's conventions.** Mirror the nearest existing file for naming, file layout, imports, error handling and styling. If `PAIR_PROGRAMMING.md` exists, its "Conventions found" section wins. Name things with the words in its "Glossary". Styles go in the project's own styling approach, never inline styles or style objects unless that is what the repo already does.
 - **No new dependencies.** If something seems to need one, say so and ask.
 - **Don't commit.** Stop when the checks are run; committing comes later.
@@ -356,7 +367,7 @@ Goal: in about 3 minutes, show that the feature works for a real user in a real 
 
 ## Steps
 
-1. **Get the specs.** Use the agreed test list from `pair:plan`, or the task as the interviewer gave it. Write the checks as a numbered list in chat, one user-visible action and expected result each. Add the ⚠ edge cases you can reach from the UI.
+1. **Get the specs.** Use the test list in the "Current plan" section of `PAIR_PROGRAMMING.md`, or the one agreed in chat, or the task as the interviewer gave it. Write the checks as a numbered list in chat, one user-visible action and expected result each. Add the ⚠ edge cases you can reach from the UI.
 
 2. **Start the app.** Take the dev command from `PAIR_PROGRAMMING.md` (or `package.json` `dev`/`start`). If a server is already running, reuse it. Otherwise start it in the background, never in the foreground, and read its output for the local URL and any build errors. A build error is a failed smoke test: report it and stop.
 

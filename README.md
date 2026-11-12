@@ -8,7 +8,7 @@ The idea: reuse existing skills where they already fit, and build only the gaps.
 |---|---|
 | `pair:onboard` | Analyzes the whole project, finds the entry point, builds a glossary of its domain terms, flags anything odd, runs the tests once, and writes a local `PAIR_PROGRAMMING.md` without touching any tracked file. |
 | `pair:orient` | Answers a question about one part of the code in chat, with `file:line` links. Writes nothing. |
-| `pair:plan` | Asks at most three questions for the interviewer, then proposes a layered design (pure logic, data access, UI), the test list with edge cases, and what's out of scope. Writes nothing. |
+| `pair:plan` | Asks at most three questions for the interviewer, then proposes a layered design (pure logic, data access, UI), the test list with edge cases, and what's out of scope. Writes no code; once agreed, saves the plan to the local `PAIR_PROGRAMMING.md`. |
 | `pair:write-tests` | Turns the agreed test list into failing tests in the repo's own pattern, testing public interfaces only, with Testing Library queries in priority order. No implementation. |
 | `pair:implement` | Makes the failing tests pass with the smallest change in the repo's conventions, layer by layer. Never edits a test; stops and asks if one looks wrong. Runs tests, typecheck and lint once. |
 | `pair:smoke-test` | Starts the dev server and checks each spec by hand in Chrome, plus a keyboard-only pass and the console. Reports pass or fail; fixes nothing. |
@@ -83,7 +83,7 @@ How to call it:
 
 ## What `pair:onboard` writes, and why it doesn't pollute their repo
 
-- `PAIR_PROGRAMMING.md` at the repo root (unless one exists). It has the commands, the conventions found **with the evidence path for each**, a **glossary** of the project's domain terms (marking which meanings were inferred), and a separate, verbose **"Not project conventions"** section. Every assumption, default or gap gets its own entry: what was assumed, why, what it changes, and a question for the interviewer.
+- `PAIR_PROGRAMMING.md` at the repo root (unless one exists). It has the commands, the conventions found **with the evidence path for each**, a **glossary** of the project's domain terms (marking which meanings were inferred), and a separate, verbose **"Not project conventions"** section, and a **"Current plan"** section that `pair:plan` fills in for each task, so the agreed plan survives a long conversation. Every assumption, default or gap gets its own entry: what was assumed, why, what it changes, and a question for the interviewer.
 - `CLAUDE.local.md` with one line, `@PAIR_PROGRAMMING.md`. Claude Code loads this file automatically next to `CLAUDE.md`, so their `CLAUDE.md` is never touched.
 - Both names go in `.git/info/exclude`, git's local-only ignore list. They never appear in `git status`, the diff or your commits, and their `.gitignore` stays unchanged.
 
@@ -93,7 +93,7 @@ When you're done, delete both files and their two lines in `.git/info/exclude`.
 
 1. **Explore (0–5 min):** `pair:onboard`. Read the summary aloud: entry point, the conventions that matter, anything odd, and the questions it raised. Confirm the tests run.
 2. **Each task:**
-   1. Plan: `pair:plan` with the spec. Read its questions to the interviewer, pass the answers back, and agree on the design and the test list.
+   1. Plan: `pair:plan` with the spec. Read its questions to the interviewer, pass the answers back, and agree on the design and the test list. It saves the agreed plan in the "Current plan" section of `PAIR_PROGRAMMING.md`, which the next steps read.
    2. Write tests: `pair:write-tests`. They should all fail, for the right reason. (For a single new component, `pair:react-component` does steps 2 and 3 in one go; for a bug, `diagnosing-bugs`.)
    3. Implement: `pair:implement`. The tests are fixed: if one looks wrong, it stops and says why. Ends with tests, typecheck and lint run once.
    4. Smoke test: `pair:smoke-test`.
@@ -109,7 +109,7 @@ Throughout: narrate what you're doing and why, and ask the interviewer whenever 
 |---|---|---|
 | Session starts, project is new to you | `pair:onboard` | Once, first thing. |
 | "How does X work?" or "where does Y happen?" about one part of the code | `pair:orient` | Chat answer only; good to read aloud. |
-| You're given a task or spec | `pair:plan` | Three questions at most, read aloud; then design and test list. Writes nothing. |
+| You're given a task or spec | `pair:plan` | Three questions at most, read aloud; then design and test list. Saved to `PAIR_PROGRAMMING.md` once agreed. |
 | Plan agreed, time to write tests | `pair:write-tests` | All tests first, all failing for the right reason. |
 | Tests written and failing, time to build | `pair:implement` | Smallest change that passes; never edits a test. |
 | Add a small feature or change one behavior, no plan needed | `mattpocock-skills:tdd` | Red → green → refactor, one test at a time. |

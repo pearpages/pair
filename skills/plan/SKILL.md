@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn the interviewer's spec into an agreed plan before any code is written, in a pair programming session. Use when given a task or spec to build, asked to plan, design, break down or "think about how we'd do this", or on /pair:plan. Asks at most three clarifying questions for the person to read to the interviewer, then proposes a modular, layered design (pure logic apart from UI and data access), the list of tests to write with edge cases that could break the app, and what is out of scope. Writes no files and no code; waits for agreement.
+description: Turn the interviewer's spec into an agreed plan before any code is written, in a pair programming session. Use when given a task or spec to build, asked to plan, design, break down or "think about how we'd do this", or on /pair:plan. Asks at most three clarifying questions for the person to read to the interviewer, then proposes a modular, layered design (pure logic apart from UI and data access), the list of tests to write with edge cases that could break the app, and what is out of scope. Writes no code; waits for agreement, then saves the plan to the Current plan section of the local PAIR_PROGRAMMING.md so later steps read it from there.
 ---
 
 # Plan
@@ -10,7 +10,7 @@ Goal: in about 5 minutes, agree with the person (and through them, the interview
 ## Rules
 
 - **The interviewer holds the requirements.** Don't invent them. When the spec is silent, ask; don't decide.
-- **Write nothing.** No files, no code, no tests. The output is a plan in chat.
+- **No code.** No source files, no tests, no tracked files. The plan is proposed in chat. The only file you touch is the local, git-ignored `PAIR_PROGRAMMING.md`, and only once the plan is agreed (see "Save the plan").
 - **Follow the project.** If `PAIR_PROGRAMMING.md` exists, read it first. File names, folders, test style and naming in the plan come from its "Conventions found" section. Anything that isn't there is flagged as a choice.
 - **Speak the domain language.** Name modules, functions, props and tests with the words in the "Glossary" section of `PAIR_PROGRAMMING.md`, not synonyms. If the spec brings a new concept, propose a name for it and list it under **New terms** so the interviewer can agree it; if the spec's words clash with the code's, ask which one wins.
 - **Fit the time.** This is a 45-minute interview. Plan the smallest thing that meets the spec; list the rest as out of scope.
@@ -62,6 +62,14 @@ At most one screen, in chat.
 **Assumptions:** <… or "none">
 ```
 
-Once agreed, add any new terms to the "Glossary" table in `PAIR_PROGRAMMING.md`.
+End by asking for agreement. If the person or the interviewer changes something, update the plan in chat and ask again.
 
-End by asking for agreement. Do not start writing tests until the person says go; then `pair:write-tests` takes the test list as it is.
+## Save the plan
+
+Once the plan is agreed, and before anything else:
+
+1. **Write it to `PAIR_PROGRAMMING.md`**, in a section called `## Current plan`, just above "Working rules for this session". Use the output format above, as agreed, with the line `Agreed: <the task in a few words>` at the top. If the section already exists from an earlier task, replace it: one plan at a time, and the earlier task's work is in its commits. This is the copy the later steps read, so a long conversation can't blur it.
+2. **Add any new terms** to the "Glossary" table in the same file.
+3. If `PAIR_PROGRAMMING.md` doesn't exist, don't create it here (it would show up in `git status`). Say so, keep the plan in chat, and suggest running `pair:onboard` first.
+
+Say in one line that the plan is saved. Do not start writing tests until the person says go; then `pair:write-tests` takes the test list from that section as it is.

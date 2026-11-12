@@ -17,7 +17,7 @@ Goal: the plan, written down as tests that fail now and will pass once the featu
 
 ## Steps
 
-1. **Get the test list.** Use the one agreed in `pair:plan`. If there isn't one, list the behaviors in chat in short bullets and ask the person to confirm before writing.
+1. **Get the test list.** Read the "Current plan" section of `PAIR_PROGRAMMING.md`, saved by `pair:plan`; if it isn't there, use the plan agreed in chat. If there isn't one, list the behaviors in chat in short bullets and ask the person to confirm before writing.
 
 2. **Pick a model test.** Find the existing test most like the one you're writing and say which one, as a `file` link. Copy its setup, not its assertions.
 

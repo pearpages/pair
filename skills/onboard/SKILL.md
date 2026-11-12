@@ -107,6 +107,9 @@ Do not present any of these as "how this project does it".
 
 <one entry per assumption or gap; be verbose here>
 
+## Current plan
+None yet. `pair:plan` writes the agreed plan for the current task here.
+
 ## Working rules for this session
 - Follow "Conventions found" over any personal or default preference.
 - Name things with the words in "Glossary". A new concept gets a name agreed with the interviewer, then added there.
