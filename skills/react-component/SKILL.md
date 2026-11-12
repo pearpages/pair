@@ -20,10 +20,16 @@ Before writing code, list in chat in 3–6 short bullets what the component must
 ## 3. Write the test first (red)
 
 - Put it next to the component, or wherever the repo puts tests, with the repo's naming (`Foo.test.tsx`, `Foo.spec.tsx`…).
-- Query the way a user or a screen reader finds things: `getByRole` with `name`, `getByLabelText`, `getByText` as a last resort. Avoid `getByTestId` unless the repo already relies on it.
+- Query the way a user or a screen reader finds things, in this order, and take the first one that works:
+  1. `getByRole` with `name` — best for accessibility and meaning.
+  2. `getByLabelText` — form controls.
+  3. `getByText` — visible text that isn't a control.
+  4. `getByTestId` — last resort, only when nothing above can find it. Say why when you use it.
+  Use `findBy…` for anything that appears after an async step, and `queryBy…` only to check something is absent.
 - Drive it with `@testing-library/user-event` if the repo has it, otherwise `fireEvent`.
 - One test per behavior from step 2. Include at least one keyboard check for anything interactive (Tab to it, Enter/Space to use it).
-- No snapshot tests. No checking internal state or class names.
+- Test the public interface only: props in, what the user sees and can do out, and callbacks called with the right arguments. A rewrite of the component's insides should not break any test.
+- No snapshot tests. No checking internal state, hooks or class names.
 - Run it once (single-run mode, never watch) and show that it fails for the right reason.
 
 ## 4. Write the component (green)
@@ -33,6 +39,7 @@ Before writing code, list in chat in 3–6 short bullets what the component must
 - Keyboard: everything clickable is reachable and usable from the keyboard; do not remove the focus outline without replacing it.
 - Typed props with no `any`. Export the props type if the repo does.
 - Keep it small: no new abstraction, hook or context unless the task needs it.
+- Do not change a test to make it pass. If a test looks wrong, stop and say why.
 - Run the test again and show it passing.
 
 ## 5. Style it

@@ -7,7 +7,7 @@
     {
       "name": "pair",
       "source": "./",
-      "description": "Skills for an AI-assisted pair programming interview: onboard, orient, review-diff, react-component."
+      "description": "Skills for an AI-assisted pair programming interview: onboard, orient, plan, write-tests, react-component, smoke-test, review-diff."
     }
   ]
 }

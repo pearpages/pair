@@ -6,12 +6,15 @@ The idea: reuse existing skills where they already fit, and build only the gaps.
 
 | Skill | What it does |
 |---|---|
-| `pair:onboard` | Analyzes the whole project, runs the tests once, and writes a local `PAIR_PROGRAMMING.md` without touching any tracked file. |
+| `pair:onboard` | Analyzes the whole project, finds the entry point, flags anything odd, runs the tests once, and writes a local `PAIR_PROGRAMMING.md` without touching any tracked file. |
 | `pair:orient` | Answers a question about one part of the code in chat, with `file:line` links. Writes nothing. |
+| `pair:plan` | Asks at most three questions for the interviewer, then proposes a layered design (pure logic, data access, UI), the test list with edge cases, and what's out of scope. Writes nothing. |
+| `pair:write-tests` | Turns the agreed test list into failing tests in the repo's own pattern, testing public interfaces only, with Testing Library queries in priority order. No implementation. |
+| `pair:smoke-test` | Starts the dev server and checks each spec by hand in Chrome, plus a keyboard-only pass and the console. Reports pass or fail; fixes nothing. |
 | `pair:review-diff` | A fresh sub-agent reviews `git diff` and returns at most five issues, ranked by severity. |
 | `pair:react-component` | Builds a React component test-first, in the repo's own conventions, with accessibility built in. |
 
-All four explain things in plain English: no unexplained jargon, and a short definition the first time a term appears.
+All of them explain things in plain English: no unexplained jargon, and a short definition the first time a term appears.
 
 ## Install
 
@@ -50,7 +53,11 @@ Run the interview in Claude Code's **default permission mode**: every file edit 
 
 Why: each approval prompt is visible on the shared screen, so the interviewer can see that you read and approve what the AI does. That is a stronger signal than a guardrail hook that blocks things silently. It also replaces `git-guardrails`: nothing like `git push` or `git reset --hard` runs without you saying yes.
 
-## Grilling is capped
+## Clarifying is capped
+
+`pair:plan` asks its own clarifying questions: one round, three at most, numbered so you can read them to the interviewer. You only need `grilling` (below) when you want to stress-test an idea outside that flow.
+
+### If you use grilling, cap it
 
 `mattpocock-skills:grilling` is built to question you relentlessly, round after round, until a whole plan is settled. In a timed interview that's the wrong shape, and the **interviewer** holds the requirements, not you.
 
@@ -83,13 +90,14 @@ When you're done, delete both files and their two lines in `.git/info/exclude`.
 
 ## Interview flow
 
-1. **Orientation (0–5 min):** `pair:onboard`. Read the summary aloud, share the questions it raised, and confirm the tests run.
+1. **Explore (0–5 min):** `pair:onboard`. Read the summary aloud: entry point, the conventions that matter, anything odd, and the questions it raised. Confirm the tests run.
 2. **Each task:**
-   1. Clarify: ask the interviewer. Use capped `grilling` if the task is fuzzy.
-   2. Test first: `tdd` for a feature, `diagnosing-bugs` for a bug, `pair:react-component` for a new component.
-   3. Implement until green.
-   4. Review: `pair:review-diff`, then decide aloud which findings to act on.
-   5. Commit: `craft:commit-message`.
+   1. Plan: `pair:plan` with the spec. Read its questions to the interviewer, pass the answers back, and agree on the design and the test list.
+   2. Write tests: `pair:write-tests`. They should all fail, for the right reason. (For a single new component, `pair:react-component` does steps 2 and 3 in one go; for a bug, `diagnosing-bugs`.)
+   3. Implement: "Make the tests pass following the conventions. Don't edit the tests; if one looks wrong, stop and say why. Then run tests, typecheck and lint once."
+   4. Smoke test: `pair:smoke-test`.
+   5. Review: `pair:review-diff`, then decide aloud which findings to act on.
+   6. Commit: `craft:commit-message`.
 3. **Last 5 min:** say the trade-offs you made and the next steps, out loud. No skill needed.
 
 Throughout: narrate what you're doing and why, and ask the interviewer whenever a requirement isn't clear.
@@ -100,10 +108,12 @@ Throughout: narrate what you're doing and why, and ask the interviewer whenever 
 |---|---|---|
 | Session starts, project is new to you | `pair:onboard` | Once, first thing. |
 | "How does X work?" or "where does Y happen?" about one part of the code | `pair:orient` | Chat answer only; good to read aloud. |
-| The task is vague or has several readings | Ask the interviewer, or capped `mattpocock-skills:grilling` | One round, three questions or fewer, read aloud. |
-| Add a feature or change behavior | `mattpocock-skills:tdd` | Red → green → refactor. |
+| You're given a task or spec | `pair:plan` | Three questions at most, read aloud; then design and test list. Writes nothing. |
+| Plan agreed, time to write tests | `pair:write-tests` | All tests first, all failing for the right reason. |
+| Add a small feature or change one behavior, no plan needed | `mattpocock-skills:tdd` | Red → green → refactor, one test at a time. |
 | Build a new React component | `pair:react-component` | Already test-first, so no need to also call `tdd`. |
 | Something is broken, throwing, failing or slow | `mattpocock-skills:diagnosing-bugs` | Reproduce first, then a failing test, then the fix. |
+| Tests pass, does it really work? | `pair:smoke-test` | In Chrome; pass/fail table, fixes nothing. |
 | Change is done, before committing | `pair:review-diff` | You choose which findings to fix. |
 | Commit | `craft:commit-message` | Matches the repo's commit style; you confirm the message. |
 | Need to sketch a UI or state model quickly before committing to it | `mattpocock-skills:prototype` | Only if time allows; throw it away after. |
@@ -116,3 +126,4 @@ Throughout: narrate what you're doing and why, and ask the interviewer whenever 
 - [ ] Install this plugin (see above) and check that `pair:onboard` is listed in a new session.
 - [ ] Make sure your global `~/.claude/CLAUDE.md` doesn't push you towards wrap-ups or filing issues in repos you don't own.
 - [ ] Set the permission mode to default.
+- [ ] Check Claude in Chrome is connected, for `pair:smoke-test`.
