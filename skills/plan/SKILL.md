@@ -12,6 +12,7 @@ Goal: in about 5 minutes, agree with the person (and through them, the interview
 - **The interviewer holds the requirements.** Don't invent them. When the spec is silent, ask; don't decide.
 - **Write nothing.** No files, no code, no tests. The output is a plan in chat.
 - **Follow the project.** If `PAIR_PROGRAMMING.md` exists, read it first. File names, folders, test style and naming in the plan come from its "Conventions found" section. Anything that isn't there is flagged as a choice.
+- **Speak the domain language.** Name modules, functions, props and tests with the words in the "Glossary" section of `PAIR_PROGRAMMING.md`, not synonyms. If the spec brings a new concept, propose a name for it and list it under **New terms** so the interviewer can agree it; if the spec's words clash with the code's, ask which one wins.
 - **Fit the time.** This is a 45-minute interview. Plan the smallest thing that meets the spec; list the rest as out of scope.
 
 ## Steps
@@ -56,8 +57,11 @@ At most one screen, in chat.
 - UI: <behavior>
 - UI: ⚠ <edge case>
 
+**New terms:** `<Term>` — <meaning> (or "none")
 **Out of scope:** <…>
 **Assumptions:** <… or "none">
 ```
+
+Once agreed, add any new terms to the "Glossary" table in `PAIR_PROGRAMMING.md`.
 
 End by asking for agreement. Do not start writing tests until the person says go; then `pair:write-tests` takes the test list as it is.

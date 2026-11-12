@@ -1,6 +1,6 @@
 ---
 name: onboard
-description: Analyze a whole unfamiliar project at the start of a pair programming session and write a local PAIR_PROGRAMMING.md the session works from, without touching any tracked file. Use when asked to onboard, analyze, get to know, or set up for a project, at the start of an interview or pairing session, or on /pair:onboard. Finds the stack, the entry point, the commands, the test runner, the styling approach, the folder layout and the commit style, flags anything odd or inconsistent, runs the tests once, and separates what the repo really does (with evidence) from everything that is only an assumption.
+description: Analyze a whole unfamiliar project at the start of a pair programming session and write a local PAIR_PROGRAMMING.md the session works from, without touching any tracked file. Use when asked to onboard, analyze, get to know, or set up for a project, at the start of an interview or pairing session, or on /pair:onboard. Finds the stack, the entry point, the commands, the test runner, the styling approach, the folder layout, the commit style and a glossary of the project's domain terms (its ubiquitous language), flags anything odd or inconsistent, runs the tests once, and separates what the repo really does (with evidence) from everything that is only an assumption.
 ---
 
 # Onboard
@@ -31,6 +31,7 @@ Goal: in about 3 minutes, learn how this project works and write it down, so tha
    - Lint and format: ESLint, Prettier, Biome config files.
    - Folder layout: top two levels, leaving out `node_modules`, build output and dot folders.
    - Commit style: `git log --oneline -15`. Conventional Commits or not, tense, scopes.
+   - **Domain language** (the project's ubiquitous language: the words the team and the code use for the things the app is about, like `Order`, `Basket`, `Checkout`, not technical words like `hook` or `reducer`). First look for one that already exists: `GLOSSARY.md`, `CONTEXT.md`, `docs/`, the README. If there isn't one, collect up to about 10 terms from where the domain shows: type and interface names (`grep -rhoE "(type|interface) [A-Z][A-Za-z]+" src | sort | uniq -c | sort -rn | head -20`), folder and feature names, API routes, and the words on screen in one or two components. For each term write what it means in one plain sentence and where you saw it. A meaning you read from a comment or doc is evidence; a meaning you guessed from the name is an assumption, so mark it with "(inferred)". Note **synonyms** (two words for one thing, like `user` and `customer`) and **one word used for two things**; those go under "Looks odd" too, and are good questions for the interviewer.
    - **Anything odd.** While you look, note what doesn't add up: two conventions that contradict each other (some components use CSS Modules, others Tailwind), config for a tool that isn't installed, or a tool installed with no config, a script that points at a missing file, tests that are skipped, a disabled lint rule, a dependency pinned to a very old version, a folder that breaks the layout everyone else follows. Each needs the paths you saw. Odd doesn't mean wrong: say what you saw and why it might matter, not that it's a mistake.
 
 4. **Run the tests once.** Use a single-run command, never watch mode: `npx vitest --run`, `CI=true npx jest`, or the script plus the right flag (`npm test -- --run` for vitest). Note the result: how many passed, failed or were skipped, and how long they took. If the tests fail or cannot run, do not fix anything. Write it down as a finding and tell the person in chat.
@@ -40,7 +41,7 @@ Goal: in about 3 minutes, learn how this project works and write it down, so tha
    - `CLAUDE.local.md` at the repo root: if it does not exist, create it with the single line `@PAIR_PROGRAMMING.md`. If it exists and lacks that line, append it. If `git ls-files --error-unmatch CLAUDE.local.md` says it is tracked, do not touch it: stop and ask the person.
    - Add both names to git's local ignore list, which lives only on this machine and is never committed. Find it with `git rev-parse --git-path info/exclude` and append each name only if it is not already there. If this is not a git repo, skip this and say so.
 
-6. **Report in chat**, in plain English, at most 12 lines: what the project is, the entry point (`file:line`), how to run tests, the result of the test run, the conventions that matter most for the work ahead, one line each, the odd things you found, and the questions for the interviewer from the "Not project conventions" section. Keep the conventions in mind for the rest of the session; the file is loaded through `CLAUDE.local.md`, so later steps can follow it.
+6. **Report in chat**, in plain English, at most 12 lines: what the project is, the entry point (`file:line`), how to run tests, the result of the test run, the conventions that matter most for the work ahead, one line each, the three to five domain terms that matter most, the odd things you found, and the questions for the interviewer from the "Not project conventions" section. Keep the conventions in mind for the rest of the session; the file is loaded through `CLAUDE.local.md`, so later steps can follow it.
 
 ## `PAIR_PROGRAMMING.md` template
 
@@ -76,6 +77,17 @@ Each one is something the repo really does. Follow these exactly.
 - **Commits**: <style> — evidence: `git log`
 - **Folder layout**: <short tree or description>
 
+## Glossary
+The project's own words for the things it is about. Use these words, spelled this way, in code, tests, names and when talking. Don't introduce a synonym.
+Source: <existing glossary file, or "collected at onboarding">
+
+| Term | Means | Evidence |
+|---|---|---|
+| `<Term>` | <one plain sentence> | `<path>` |
+| `<Term>` | <one plain sentence> (inferred) | `<path>` |
+
+Synonyms or clashes: <e.g. "`user` and `customer` both mean the buyer" — or "none found">
+
 ## Looks odd
 Things in the repo that don't add up. Not necessarily wrong; worth knowing before changing nearby code.
 
@@ -97,6 +109,7 @@ Do not present any of these as "how this project does it".
 
 ## Working rules for this session
 - Follow "Conventions found" over any personal or default preference.
+- Name things with the words in "Glossary". A new concept gets a name agreed with the interviewer, then added there.
 - Before anything listed under "Not project conventions", say so out loud and ask.
 - Do not add dependencies without asking.
 - Run tests in single-run mode, never watch mode.

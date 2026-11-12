@@ -12,6 +12,7 @@ Goal: the plan, written down as tests that fail now and will pass once the featu
 - **Tests only.** Write or edit test files, plus the smallest stub needed for the test to load (an exported function that throws `not implemented`, or an empty component). No real implementation.
 - **Public interfaces only.** Test what callers and users can see: a function's return value, what's on screen, what the user can do, which callback was called with what. Never internal state, private helpers, hooks' insides, class names or call counts on things the user can't see. A rewrite of the insides should break no test.
 - **The repo's pattern.** Mirror one existing test file: location (co-located or a `tests` folder), naming (`.test.ts` vs `.spec.ts`), `describe`/`it` vs `test`, how renders and mocks are set up, any shared helpers. If `PAIR_PROGRAMMING.md` exists, its "Conventions found" section wins.
+- **The domain's words.** Test names and `describe` blocks use the terms in the "Glossary" section of `PAIR_PROGRAMMING.md`, so a test reads like a sentence about the business: "applies the discount to the basket total", not "returns correct value".
 - **No new dependencies.** If Testing Library or user-event is missing, say so and ask.
 
 ## Steps

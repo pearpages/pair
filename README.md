@@ -6,7 +6,7 @@ The idea: reuse existing skills where they already fit, and build only the gaps.
 
 | Skill | What it does |
 |---|---|
-| `pair:onboard` | Analyzes the whole project, finds the entry point, flags anything odd, runs the tests once, and writes a local `PAIR_PROGRAMMING.md` without touching any tracked file. |
+| `pair:onboard` | Analyzes the whole project, finds the entry point, builds a glossary of its domain terms, flags anything odd, runs the tests once, and writes a local `PAIR_PROGRAMMING.md` without touching any tracked file. |
 | `pair:orient` | Answers a question about one part of the code in chat, with `file:line` links. Writes nothing. |
 | `pair:plan` | Asks at most three questions for the interviewer, then proposes a layered design (pure logic, data access, UI), the test list with edge cases, and what's out of scope. Writes nothing. |
 | `pair:write-tests` | Turns the agreed test list into failing tests in the repo's own pattern, testing public interfaces only, with Testing Library queries in priority order. No implementation. |
@@ -82,7 +82,7 @@ How to call it:
 
 ## What `pair:onboard` writes, and why it doesn't pollute their repo
 
-- `PAIR_PROGRAMMING.md` at the repo root (unless one exists). It has the commands, the conventions found **with the evidence path for each**, and a separate, verbose **"Not project conventions"** section. Every assumption, default or gap gets its own entry: what was assumed, why, what it changes, and a question for the interviewer.
+- `PAIR_PROGRAMMING.md` at the repo root (unless one exists). It has the commands, the conventions found **with the evidence path for each**, a **glossary** of the project's domain terms (marking which meanings were inferred), and a separate, verbose **"Not project conventions"** section. Every assumption, default or gap gets its own entry: what was assumed, why, what it changes, and a question for the interviewer.
 - `CLAUDE.local.md` with one line, `@PAIR_PROGRAMMING.md`. Claude Code loads this file automatically next to `CLAUDE.md`, so their `CLAUDE.md` is never touched.
 - Both names go in `.git/info/exclude`, git's local-only ignore list. They never appear in `git status`, the diff or your commits, and their `.gitignore` stays unchanged.
 
